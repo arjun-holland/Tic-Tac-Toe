@@ -1,0 +1,130 @@
+#include <stdio.h>
+#include<iostream>
+#define endl "\n";
+
+using namespace std;
+
+int cp;//currentPlayer
+char cm;//currentMarker
+char b[3][3]={{'1','2','3'},{'4','5','6'},{'7','8','9'}};//board
+
+
+void display(){
+    cout<<"      _ _ _ \n";
+    cout<<"     |   |   |   |\n";
+    cout<<"     | "<<b[0][0]<<" | "<<b[0][1]<<" | "<<b[0][2]<<" |\n";
+    cout<<"     |_|_|_|\n";
+    cout<<"     |   |   |   |\n";
+    cout<<"     | "<<b[1][0]<<" | "<<b[1][1]<<" | "<<b[1][2]<<" |\n";
+    cout<<"     |_|_|_|\n";
+    cout<<"     |   |   |   |\n";
+    cout<<"     | "<<b[2][0]<<" | "<<b[2][1]<<" | "<<b[2][2]<<" |\n";
+    cout<<"     |_|_|_|\n\n";
+}
+
+bool boardMove(int n) {
+    char ac = (cm == 'x') ? 'o' : 'x';
+
+    int row = (n - 1) / 3; // Integer division to find row
+    int col = (n - 1) % 3; // Modulus to find column
+   
+    if (b[row][col] == ac) {
+        return false;
+    }
+    b[row][col] = cm;
+    return true;
+}
+
+bool checkWinner(char cm){
+    if((b[0][0]==cm && b[0][1]==cm && b[0][2]==cm)||//check  rows
+       (b[1][0]==cm && b[1][1]==cm && b[1][2]==cm)||
+       (b[2][0]==cm && b[2][1]==cm && b[2][2]==cm)||
+       (b[0][0]==cm && b[1][0]==cm && b[2][0]==cm)||//check columns
+       (b[0][1]==cm && b[1][1]==cm && b[2][1]==cm)||
+       (b[0][2]==cm && b[1][2]==cm && b[2][2]==cm)||
+       (b[0][0]==cm && b[1][1]==cm && b[2][2]==cm)||//check diagonals
+       (b[2][0]==cm && b[1][1]==cm && b[0][2]==cm)){
+          return true;  
+       }
+    return false;  
+}
+
+void refillBoard(){
+        b[0][0]='1';
+        b[0][1]='2';
+        b[0][2]='3';
+        b[1][0]='4';
+        b[1][1]='5';
+        b[1][2]='6';
+        b[2][0]='7';
+        b[2][1]='8';
+        b[2][2]='9';
+}
+
+void game(){
+    cout<<"Player 1 mark your marker (x or O) : ";
+    char m1;
+    cin>>m1;
+    display();
+    cp = 1;
+    cm = m1;
+    bool playerWon = false;
+    for(int i=0;i<9;i++){
+        cout<<"It's Player "<<cp<<" move ,"<<
+             "Enter Your Move Number : ";
+        int slot;
+        cin>>slot;
+       
+        if(slot<1 && slot>9){
+            cout<<"Invalid Move Player "<<cp<<"\n";
+            i--;
+            continue;
+        }
+       
+       
+        if(boardMove(slot))
+            display();
+        else{
+            cout<<"Invalid Move Player "<<cp<<",slot "<<
+                slot<<" is already Occupied \n";
+            i--;
+            continue;    
+        }
+       
+        if(checkWinner(cm)){
+            cout<<"Player "<<cp<<" Won The Game\n";
+            cout<<"Congratulations Player "<<cp<<endl;
+            playerWon = true;
+            break;
+        }
+       
+        if(cp == 1){
+            cp = 2;
+        }else{
+            cp = 1;
+        }
+        cm = (cm=='x')?'o':'x';
+        break;
+   
+    }
+    if(playerWon == false){
+        cout<<"Game is DRAW\n";
+    }
+    cout<<"Want to Play Again (y/n) : ";
+    char pc;
+    cin>>pc;
+    if(pc=='y'){
+        refillBoard();
+        game();
+    }
+    else{
+        cout<<"Bye Bye..\n";
+    }
+}
+
+int main()
+{
+    cout<<"################| T I C - T A C - T O E  G A M E |################\n";
+    game();
+    return 0;
+}
